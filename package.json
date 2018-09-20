@@ -24,5 +24,8 @@
     "express-session": "^1.15.6",
     "helmet": "^3.13.0",
     "pg": "^7.4.3"
+  },
+  "engines": {
+    "node": "8.9.1"
   }
 }
