@@ -1,22 +1,28 @@
-SELECT pg_terminate_backend(pg_stat_activity.pid)
-FROM pg_stat_activity
-WHERE pg_stat_activity.datname = 'stargarnet' 
-  AND pid <> pg_backend_pid();
---The above code forces closed all the connections (like the pool connection from Nodejs)
-DROP DATABASE stargarnet;
-CREATE DATABASE stargarnet;
-\c stargarnet;
---This is where the schema for our database starts to get created
---To run code locally, enter command line: "psql -U postgres -d postgres -a -f postgreSQL/createtable.sql"
---PASSWORD: PASSWORD (for Zach's Postgres)
---\q to quit
---To enter psql from the normal command line: psql -U postgres 
---Username is postgres, that's what the above line means. 
---List databases: \l
---List tables in current database: \dt
---Connect to a specific database \c NAMEOFDATABASE
---Total number of tables: select count(*) from information_schema.tables;
---See http://www.postgresqltutorial.com/postgresql-create-table/
+--THE FOLLOWING CODE WILL AFFECT THE DEPOLYMENT DATABASE USE WITH EXTREME CARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-- heroku pg:reset postgresql-shaped-81134 --app kings-club --confirm kings-club
+-- cat initiationScript.sql | heroku pg:psql --app kings-club
+--Use the above line to run this file on your local development computer. 
+
+
+--To enter PSQL: heroku pg:psql --app kings-club
+
+
+--         ,     \    /      ,        
+--        / \    )\__/(     / \       
+--       /   \  (_\  /_)   /   \      
+--  ____/_____\__\@  @/___/_____\____ 
+-- |             |\../|              |
+-- |              \VV/               |
+-- |        ----------------         |
+-- |_________________________________|
+--  |    /\ /      \\       \ /\    | 
+--  |  /   V        ))       V   \  | 
+--  |/     `       //        '     \| 
+--  `              V                '
+
+
+
+
 CREATE TABLE users (
  id serial PRIMARY KEY, 
  username VARCHAR (255) UNIQUE NOT NULL,

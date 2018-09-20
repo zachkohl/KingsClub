@@ -14,10 +14,7 @@ app.get('/register', function (req, res) { //This is how you render views (views
   
   
   app.post('/register', function(req, res) {
-    if(!req.body.phone){ //phone validation
-      res.render('register', { message: 'please enter a valid phone number' })
-    }
-    else{
+
     
     bcrypt.hash(req.body.password, 10, function(err, hash) { //This code won't fire till the hash variable is ready, this is called a "callback." Now we will only store things in the database once everything is read to go. 
       if (err) {
@@ -47,7 +44,7 @@ app.get('/register', function (req, res) { //This is how you render views (views
       }//end else
   
     }); //end hashing function
-  };//end phone validation
+
   
   });// end app.post
   

@@ -20,25 +20,40 @@ app.listen(PORT, () => console.log('Example app listening on port 80!'))
 
 //Database +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 if (app.get('env') === 'development') {
-  const { Pool, Client } = require('pg')
+//   const { Pool, Client } = require('pg')
 
-var pool = new Pool({
-user: 'postgres',
-host: 'localhost',
-database: 'stargarnet',
-password: 'password',
-port: 5432,
-})
+// var pool = new Pool({
+// user: 'postgres',
+// host: 'localhost',
+// database: 'stargarnet',
+// password: 'password',
+// port: 5432,
+// })
+
+// var client = new Client({
+// user: 'postgres',
+// host: 'localhost',
+// database: 'stargarnet',
+// password: 'password',
+// port: 5432,
+// })
+// client.connect()
+
+
+var { Pool, Client } = require('pg')
 
 var client = new Client({
-user: 'postgres',
-host: 'localhost',
-database: 'stargarnet',
-password: 'password',
-port: 5432,
-})
-client.connect()
+connectionString: "postgres://dkiphcqrmtggcy:16964a97732117e2a346bc73d462c9e08bd599eb7ed5d04d4b540deef1749e2e@ec2-54-235-249-33.compute-1.amazonaws.com:5432/d1a8hqms7seu5l",
+ssl: true,
+});
 
+var pool = new Pool({
+connectionString: "postgres://dkiphcqrmtggcy:16964a97732117e2a346bc73d462c9e08bd599eb7ed5d04d4b540deef1749e2e@ec2-54-235-249-33.compute-1.amazonaws.com:5432/d1a8hqms7seu5l",
+ssl: true,
+});
+
+
+client.connect();
 }
 else{
 
