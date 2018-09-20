@@ -16,7 +16,6 @@
   },
   "homepage": "https://github.com/zachkohl/KingsClub#readme",
   "dependencies": {
-    "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "connect-pg-simple": "^5.0.0",
     "express": "^4.16.3",
