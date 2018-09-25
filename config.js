@@ -73,15 +73,15 @@ ssl: true,
 client.connect();
 }
 
-function query(text, values,callback,) {
+function query(text, values,callback,errorLog) {
   //Query
 
  
   pool.query(text, values, (err, response) => {
     
     if (err) {
-      console.log(err.stack)
-      
+      // console.log(JSON.stringify(err.stack));
+console.log(err.stack.split('\n',1)[0])
     } 
     else {
       if (response.rows) {
@@ -89,6 +89,7 @@ function query(text, values,callback,) {
       } 
       else {
         console.log('no rows')
+        errorLog('no rows');
       };
       
       };//end else
@@ -107,7 +108,7 @@ var sess = {
     pool : pool,                // Connection pool
      // Use another table-name than the default "session" one
   }),
-  secret: 'keyboard cat',
+  secret: 'VERY VERY SECRET',
   cookie: {},
   resave: false,
   saveUninitialized: true

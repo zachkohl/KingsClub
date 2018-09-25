@@ -1,0 +1,124 @@
+<p>registration</p>
+{{!-- <form method="post">
+    <label for="username">User Name</label>
+    <input type="text" name="username"><br>
+    <label for="email">Email<label>
+    <input type="text" name="email"><br>
+    <label for="phone">phone<label>
+    <input type="text" name="phone"><br>
+    <label for="password">Password</label>
+    <input type="password" name="password"><br>
+    
+    <input type="submit"> --}}
+    <h1>{{message}}</h1>
+</form>
+
+<div id='master'>
+    <button id = "buttonAdult">add Adult</button>
+    <button id ="addChild">Add Child</button>
+    <ul id="adults"></ul>
+    <br>
+    <br>
+    <br>
+    <ul id="children"></ul>
+    <br>
+    <br>
+      <button id ="toDB">Submit</button>
+</div>
+
+<script>
+$( document ).ready(function() {
+localID = 0;
+newAdult();
+newChild();
+
+$( '#master' ).on("click","#toDB",function(){  //must use .on() if you want to update updates. 
+adultNames = [];
+childNames = [];
+$('.adultInput').each(function( i ) {
+ adultNames.push($(this).val())
+})
+
+$('.childInput').each(function( i ) {
+ childNames.push($(this).val())
+})
+
+console.log(adultNames.toString())
+console.log(childNames.toString())
+
+//Send em'
+    let package = [{ name: "childNames", value: childNames},{name: "adultNames", value: adultNames}]
+     $.ajax({
+         url:"/registration",
+         data: package,
+         type: 'POST',
+         contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
+     }).done(function(){
+         console.log('submission complete')
+     })//end done
+     .fail(function( xhr, status, errorThrown ) {
+       alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    })
+
+});
+
+
+
+function newAdult(){
+localID++;
+HTML ='<li id ='+localID+' class ="adultLi">\
+<form id = '+'form'+localID+'>\
+            <label for="Adultname">Adult Name</label>\
+            <input type="text" id="adultInput'+ localID +'"" name="Adultname" class = "adultInput"><br>\
+</form>\
+<button id = '+'button'+localID+' class ="remove">remove</button>\
+</li>'
+$("#adults").append(HTML)
+};
+
+$( '#master' ).on("click","#buttonAdult",function(){  //must use .on() if you want to update updates. 
+newAdult();
+});
+
+
+
+
+function newChild(){
+localID++;
+HTML ='<li id ='+'child'+localID+' class ="childLi">\
+<form id = '+'form'+'Child'+localID+'>\
+            <label for="ChildName">Child name</label>\
+            <input type="text" name="ChildName" class = "childInput"><br>\
+</form>\
+<button id = '+'button'+localID+' class ="remove">remove</button>\
+</li>'
+$("#children").append(HTML)
+};
+
+$( '#master' ).on("click","#addChild",function(){  //must use .on() if you want to update updates. 
+newChild();
+});
+
+
+
+
+
+
+
+
+$( '#master' ).on("click",".remove",function(){  //must use .on() if you want to update updates. 
+    let grabber = $(this).parents('li').attr('id');
+    grabber = "#"+grabber;
+    console.log(grabber)
+    $(grabber).fadeOut(300,function(){$(grabber).remove()});
+    
+ 
+});
+
+
+
+}); //end on load
+</script>

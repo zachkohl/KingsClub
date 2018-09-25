@@ -1,0 +1,84 @@
+<h1>KINGS CLUB SIGN IN</h1>
+    <p>{{message}}</p>
+</form>
+
+<div id='master'>
+    <input type = "text" id = "adultName"></input>
+    <button id = "lookup">lookup</button>
+<br>
+<br>
+    <ul id="children"></ul>
+    <br>
+    <br>
+      <button id ="toDB">Submit</button>
+</div>
+
+<script>
+$( document ).ready(function() {
+childCounter = 0;
+
+$( '#master' ).on("click","#lookup",function(){  //must use .on() if you want to update updates. 
+ 
+ 
+  $.ajax({
+         url:"/api/signin",
+         data: [{name:'adultName', value:$("#adultName").val()}],
+         type: 'POST',
+         contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
+     }).done(    function laterFunction(response_set){
+            console.log(response_set)
+            let rows = JSON.parse(response_set)
+            for (let i = 0; i < rows.length; i++){
+console.log('NUMBER '+ i + ":  " + rows[i].child_id);
+           newChild(rows[i]);
+           }; //end for loop
+            })//end done
+     .fail(function( xhr, status, errorThrown ) {
+     //  alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      //console.dir( xhr );
+    })
+
+
+ 
+}); //end on click lookup
+
+function newChild(row){
+    console.log(row.child_id);
+    stringHTML = '<li id= "li'+childCounter+'" data-childname = "'+row.child_name+'" data-childid ="'+row.child_id+'">\
+    <p><button id = '+childCounter+' class = "signin">sign in</button> '+row.child_name+'  </p>\
+    </li>'
+$('#children').append(stringHTML)
+childCounter++;
+};
+
+$('#master').on("click",".signin",function(){
+     let thisID = $(this).parents('li').attr('id');
+     grabber = "#" + thisID
+    console.log(grabber)
+    $(grabber).css('color','red');
+    let childname = $(grabber).data('childname');
+    let childId = $(grabber).data('childid')
+    console.log(childname)
+    console.log(childId);
+
+
+    $.ajax({
+         url:"/api/signinChild",
+         data: [{name:'childName', value:childname},{name:'childId',value:childId}],
+         type: 'POST',
+         contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
+     }).done(    function laterFunction(response_set){
+            console.log(response_set)
+            })//end done
+     .fail(function( xhr, status, errorThrown ) {
+     //  alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      //console.dir( xhr );
+    })
+})
+
+}) //end on load
+</script>
