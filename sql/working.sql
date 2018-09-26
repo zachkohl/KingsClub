@@ -24,7 +24,8 @@
 -- (
 --     child_id serial PRIMARY KEY,
 --     child_name VARCHAR (255) UNIQUE NOT NULL,
---     child_photo VARCHAR
+--     child_photo VARCHAR,
+--     child_signedin boolean DEFAULT FALSE
 
 -- );
 
@@ -46,11 +47,19 @@
 
 -- );
 
+CREATE TABLE signout
+(
+signout_id serial PRIMARY KEY,
+signout_child_id int NOT NULL,
+signout_child_name VARCHAR (255),
+signout_intime timestamptz NOT NULL
+);
+
 -- ALTER TABLE child DROP COLUMN signedin;
 -- ALTER TABLE child ADD COLUMN child_signedin boolean DEFAULT FALSE;
 
-DO $$ BEGIN IF (SELECT child.child_signedin FROM child WHERE child.child_name = 'mell') IS TRUE THEN INSERT INTO signin (signin_child_id,signin_child_name,signin_intime)
-      VALUES (12,mell,'2018-09-24 21:46:06.249+00'); END IF; END $$
+-- DO $$ BEGIN IF (SELECT child.child_signedin FROM child WHERE child.child_name = 'mell') IS TRUE THEN INSERT INTO signin (signin_child_id,signin_child_name,signin_intime)
+--       VALUES (12,mell,'2018-09-24 21:46:06.249+00'); END IF; END $$
 
 --https://stackoverflow.com/questions/9789736/how-to-implement-a-many-to-many-relationship-in-postgresql
 
@@ -60,4 +69,44 @@ DO $$ BEGIN IF (SELECT child.child_signedin FROM child WHERE child.child_name = 
 --http://www.sql-join.com/sql-join-types/
 
 
+-- CREATE OR REPLACE FUNCTION show_users(ref refcursor) RETURNS refcursor AS $$
+-- BEGIN OPEN ref FOR SELECT * FROM users;
+-- RETURN ref;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
+--   CREATE OR REPLACE FUNCTION show_adults(ref refcursor) RETURNS refcursor AS $$
+--     BEGIN
+--       OPEN ref FOR SELECT adult_name FROM adult;   -- Open a cursor
+--       RETURN ref;                                                       -- Return the cursor to the caller
+--     END;
+--     $$ LANGUAGE plpgsql;
+
+--http://www.postgresqltutorial.com/plpgsql-function-parameters/ 
+
+-- CREATE OR REPLACE FUNCTION square(
+--  INOUT a NUMERIC)
+-- AS $$
+-- BEGIN
+--  a := a * a * a;
+-- END; $$
+-- LANGUAGE plpgsql;
+
+-- DROP FUNCTION test();
+	
+-- CREATE OR REPLACE FUNCTION test () 
+--  RETURNS TABLE (
+-- adult_id INT,
+--  adult_name VARCHAR,
+--  adult_photo VARCHAR
+-- ) 
+-- AS $$
+-- BEGIN
+--  RETURN QUERY SELECT
+--  *
+--  FROM
+--  adult;
+-- END; $$ 
+ 
+-- LANGUAGE 'plpgsql';
 

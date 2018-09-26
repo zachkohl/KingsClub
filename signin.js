@@ -32,7 +32,7 @@ function routes(config) {
 
 
         // console.log(req.body.adultName)
-        let text = 'SELECT child_name,child.child_id FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1';
+        let text = 'SELECT child_name,child.child_id,child_signedin FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = FALSE';
         let values = [req.body.adultName];
         query(text, values, callback);
         function callback(data) {
@@ -50,47 +50,49 @@ function routes(config) {
 
 
     app.post('/api/signinChild', checkSession, function (req, res) {
+step1();
+function step1(){
+    let text = 'SELECT child_signedin FROM child WHERE child_name = $1';
+    let values = [req.body.childName];
+    query(text, values, callback);
+    function callback(data) {
+        console.log(data.rows)
+        if(!data.rows[0].child_signedin){
+            step2();
+        }else{
+            res.send('child already signed in')
+        }
+    }//end callback
+};//END step 1
+
+function step2(){
+    let text = 'UPDATE child SET child_signedin = TRUE WHERE child_name = $1';
+let values = [req.body.childName];
+query(text, values, callback);
+function callback(data) {
+    step3();
+}
+}; //end step 2
 
 
-        signinTime = new Date();
+// -- signin_child_id int NOT NULL,
+// -- signin_child_name VARCHAR (255),
+// -- signin_intime timestamptz NOT NULL,
 
 
-        let text = "DO $$ BEGIN IF (SELECT child.child_signedin FROM child WHERE child.child_name =  $1) IS TRUE THEN INSERT INTO signin (signin_child_id,signin_child_name,signin_intime)\
-    VALUES ($1,$2,$3); END IF; END $$"
-        let values = [req.body.childName, req.body.childId, signinTime];
-
-        pool.query(text, values, (err, response) => {
-
-            if (err) {
-                // console.log(JSON.stringify(err.stack));
-                console.log(err.stack.split('\n', 1)[0])
-            }
-            else {
-                res.send('complete')
-
-            };//end else
-
-        })
-
-        //   query(text, values, callback);
-        //  function callback(data) {
-        //  console.log(data.rows)
-        //  package = JSON.stringify(data.rows)
-        //  res.send('INSERT complete')
-
-        //  };//end callback
+function step3(){
+    let nowTime = new Date();
+    let text = 'INSERT INTO signin (signin_child_id, signin_child_name,signin_intime) VALUES ($1,$2,$3)';
+let values = [req.body.childId,req.body.childName,nowTime];
+query(text, values, callback);
+function callback(data) {
+   res.send('child signed in')
+}
+}//end step 3
+      
+    });//end app.post
 
 
-        //      CREATE TABLE signin
-        // (
-        // signin_id serial PRIMARY KEY,
-        // signin_child_id int NOT NULL,
-        // signin_child_name VARCHAR (255),
-        // signin_intime timestamptz NOT NULL,
-        // signin_outtime timestamptz
-
-        // );
-    });
 
 
 

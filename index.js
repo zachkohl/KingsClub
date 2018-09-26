@@ -11,11 +11,12 @@ login = require('./login.js')(config)
 
 registration = require('./registration.js')(config);
 
-signinout = require('./signinout.js')(config)
+signin = require('./signin.js')(config);
 
 
+signout = require('./signout.js')(config);
 
-
+s3Test = require('./S3Test.js')(config);
 
 
 

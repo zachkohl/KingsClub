@@ -1,4 +1,4 @@
-<h1>KINGS CLUB SIGN IN</h1>
+<h1>KINGS CLUB SIGN OUT</h1>
     <p>{{message}}</p>
 </form>
 
@@ -21,7 +21,7 @@ $( '#master' ).on("click","#lookup",function(){  //must use .on() if you want to
  
  
   $.ajax({
-         url:"/api/signin",
+         url:"/api/signout",
          data: [{name:'adultName', value:$("#adultName").val()}],
          type: 'POST',
          contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
@@ -57,7 +57,7 @@ $('#master').on("click",".signin",function(){
      let thisID = $(this).parents('li').attr('id');
      grabber = "#" + thisID
     console.log(grabber)
-    $(grabber).css('color','red');
+    $(grabber).css('color','blue');
     let childname = $(grabber).data('childname');
     let childId = $(grabber).data('childid')
     console.log(childname)
@@ -65,7 +65,7 @@ $('#master').on("click",".signin",function(){
 
 
     $.ajax({
-         url:"/api/signinChild",
+         url:"/api/signoutChild",
          data: [{name:'childName', value:childname},{name:'childId',value:childId}],
          type: 'POST',
          contentType :  "application/x-www-form-urlencoded; charset=UTF-8",

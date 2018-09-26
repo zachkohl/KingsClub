@@ -33,7 +33,7 @@ function routes(config) {
         
 
         for (i = 0; i < adultNames.length; i++) {
-            let text = 'INSERT INTO adult (adult_name) VALUES ($1) ON CONFLICT (adult_name) DO UPDATE SET adult_name = $1 RETURNING *'
+            let text = 'INSERT INTO adult (adult_name) VALUES ($1) ON CONFLICT (adult_name) DO UPDATE SET adult_name = $1 G *RETURNIN'
             let values = [adultNames[i]];
             query(text, values, callback);
             function callback(data) {

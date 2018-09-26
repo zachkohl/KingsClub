@@ -1,0 +1,1 @@
+Where we configure CORS https://console.aws.amazon.com/s3/buckets/kings-club/?region=us-east-2&tab=permissions
