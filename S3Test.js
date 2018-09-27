@@ -3,8 +3,8 @@ function routes(config) {
     checkSession = config.checkSession;
     query = config.query;
     const aws = require('aws-sdk');
-    aws.config.region = 'US West (Oregon)';
-const S3_BUCKET = process.env.S3_BUCKET;
+    aws.config.region = 'us-west-2';
+const S3_BUCKET = process.env.S3_BUCKET || 'kings-club';
 
 app.get('/S3Test', checkSession, function (req, res) {
     res.render('S3Test')
@@ -31,17 +31,36 @@ app.get('/sign-s3', (req, res) => {
       stringcat = '`https://'+S3_BUCKET+'.s3.amazonaws.com/'+fileName
       const returnData = {
         signedRequest: data,
-        url: stringcat
+        url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
       };
       res.write(JSON.stringify(returnData));
       res.end();
     });
   });
 
+//   var s3 = new aws.S3(); //access is given based on the credentials stored elsewhare on the computer. 
+//   var myBucket = 'kings-club'; //name of bucket
 
+//   var myKey = 'txt'; //what the thing will be
+  
+  
+//    params = {Bucket: myBucket, Key: myKey, Body: 'Valueeee or some data' };
+  
+//        s3.putObject(params, function(err, data) {
+  
+//            if (err) {
+  
+//                console.log(err)
+  
+//            } else {
+  
+//                console.log("Successfully uploaded data to myBucket/myKey");
+  
+//            }
+  
+//         });
 
-
-
+//The above actually works. Key is having the correct credentials put into C:\Users\Zach\.aws\credentials
 
 
 
