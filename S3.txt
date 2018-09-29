@@ -1,1 +1,106 @@
 Where we configure CORS https://console.aws.amazon.com/s3/buckets/kings-club/?region=us-east-2&tab=permissions
+
+Step 1: create a new bucket and user using the Amazon console
+https://console.aws.amazon.com/iam/home?#/users
+Add S3 group or persmission
+Use Bucket Policy to add specific permission:
+https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html
+
+Update user permision by directly editing JSON.
+The bucket must reference the user, and the user must reference the bucket. 
+https://github.com/keithweaver/python-aws-s3/
+
+Step 2: add user credentials to heroku app (use web console)
+Local host has root privliages, which means you don't have to mess around. 
+But if you want to, the file is at C:\Users\Zach\.aws\credentials
+
+Step 3: reference example code to build application
+
+
+Example CORS:
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>https://kings-club.herokuapp.com</AllowedOrigin>
+    <AllowedOrigin>http://AE9E5CF3EEFF2DCA</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+
+
+Example Bucket Policy:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AddCannedAcl",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::803875257005:user/kings-club"
+                ]
+            },
+            "Action": "*",
+            "Resource": [
+                "arn:aws:s3:::kings-club/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "s3:x-amz-acl": [
+                        "public-read"
+                    ]
+                }
+            }
+        }
+    ]
+}
+
+Example User Inline Policy:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::kings-club"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:GetObject",
+                "s3:GetObjectAcl",
+                "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::kings-club/*"
+        }
+    ]
+}
+
+
+
+
+To update the "localhost" configuration on windows:
+See C:\Windows\System32\drivers\etc\hosts
+Open with code to be able to make admin changes. 
+https://stackoverflow.com/questions/33681190/changing-the-name-of-localhost-web-app-express#33682007
+
+
+
+Current webhost:
+
+http://ae9e5cf3eeff2dca

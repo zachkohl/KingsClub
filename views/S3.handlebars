@@ -1,6 +1,6 @@
 <input type="file" id="file-input">
 <p id="status">Please select a file</p>
-<img id="preview" src="/images/default.png">
+
 
 <form method="POST" action="/save-details">
   <input type="hidden" id="avatar-url" name="avatar-url" value="/images/default.png">
@@ -14,7 +14,6 @@
   document.getElementById("file-input").onchange = () => {
     const files = document.getElementById('file-input').files;
     const file = files[0];
-    console.log('flag 1')
     if(file == null){
       return alert('No file selected.');
     }
@@ -23,16 +22,12 @@
 })();
 
 function getSignedRequest(file){
-      console.log('flag 2')
-
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
-console.log('flag 2.1')
   xhr.onreadystatechange = () => {
     if(xhr.readyState === 4){
       if(xhr.status === 200){
         const response = JSON.parse(xhr.responseText);
-        console.log(response)
         uploadFile(file, response.signedRequest, response.url);
       }
       else{
@@ -44,12 +39,9 @@ console.log('flag 2.1')
 }
 
 function uploadFile(file, signedRequest, url){
-  console.log('flag 3')
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', signedRequest);
-
   xhr.onreadystatechange = () => {
- 
     if(xhr.readyState === 4){
       if(xhr.status === 200){
         document.getElementById('preview').src = url;

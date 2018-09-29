@@ -53,8 +53,11 @@ console.log(childNames.toString())
          data: package,
          type: 'POST',
          contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
-     }).done(function(){
-         console.log('submission complete')
+     }).done(function(msg){
+         console.log(msg)
+         if(msg == 'please fill in at least one adult and one child name'){
+             alert(msg)
+         }
      })//end done
      .fail(function( xhr, status, errorThrown ) {
        alert( "Sorry, there was a problem!" );
