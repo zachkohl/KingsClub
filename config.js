@@ -16,7 +16,7 @@ app.engine('handlebars', exphbs({defaultLayout: 'loggedout'}));
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('static'));
-app.listen(PORT, () => console.log('Example app listening on port 80!'))
+// would use but for socket.io app.listen(PORT, () => console.log('Example app listening on port 80!'))
 
 //Database +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 if (app.get('env') === 'development') {
@@ -137,10 +137,30 @@ function checkSession(req, res, next) {
   }
 };
 
+//Socket.io++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+server.listen(PORT,console.log('listening on port '+PORT));
+
+//https://socket.io/docs/#Installing
+
+
+
+
+//FileUpload +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
+
+
+
+
+
+
+
 
 
 //Export +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-config = {app, query, checkSession, pool}
+config = {app, query, checkSession, pool,io}
 
 
 module.exports = config;

@@ -18,5 +18,7 @@ signout = require('./signout.js')(config);
 
 s3Test = require('./S3Test.js')(config);
 
+camera = require('./camera.js')(config);
+
 
 

@@ -24,6 +24,7 @@
     <br>
     <br>
       <button id ="toDB">Submit</button>
+    <img src ="test.jpeg" id ="image">
 </div>
 
 <script>
@@ -78,6 +79,8 @@ HTML ='<li id ='+localID+' class ="adultLi">\
             <input type="text" id="adultInput'+ localID +'"" name="Adultname" class = "adultInput"><br>\
 </form>\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
+<input type="radio" id="radio'+localID+'" name="Pselect" value="'+localID+'">\
+\
 </li>'
 $("#adults").append(HTML)
 };
@@ -91,12 +94,13 @@ newAdult();
 
 function newChild(){
 localID++;
-HTML ='<li id ='+'child'+localID+' class ="childLi">\
+HTML ='<li id ='+localID+' class ="childLi">\
 <form id = '+'form'+'Child'+localID+'>\
             <label for="ChildName">Child name</label>\
             <input type="text" name="ChildName" class = "childInput"><br>\
 </form>\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
+<input type="radio" id="radio'+localID+'" name="Pselect" value="'+localID+'">\
 </li>'
 $("#children").append(HTML)
 };
@@ -122,6 +126,70 @@ $( '#master' ).on("click",".remove",function(){  //must use .on() if you want to
 });
 
 
+var pictureName = 'input.jpeg'
+
+function getSignedRequest(pictureName){
+    
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `/sign-s3?file-name=${pictureName}&file-type=${pictureName}`);
+
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+        const response = JSON.parse(xhr.responseText);
+        console.log(response.url)
+        $('#image').attr('src',response.url)
+     //  $('.image').value = response.url;
+    //    uploadFile(file, response.signedRequest, response.url);
+      }
+      else{
+        alert('Could not get signed URL.');
+      }
+    }
+  };
+  xhr.send();
+}
+getSignedRequest(pictureName);
+
+function uploadFile(file, signedRequest, url){
+  console.log('flag 3')
+  const xhr = new XMLHttpRequest();
+  xhr.open('PUT', signedRequest);
+
+  xhr.onreadystatechange = () => {
+ 
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+        document.getElementById('preview').src = url;
+        document.getElementById('avatar-url').value = url;
+      }
+      else{
+        alert('Could not upload file.');
+      }
+    }
+  };
+  xhr.send(file);
+}
+
+
+
+
+
+
+
+
 
 }); //end on load
 </script>
+<script src="/socket.io/socket.io.js"></script>
+
+{{!-- $("#master").on("change","input[name=Pselect]:radio",function(){
+    val = $("input[name=Pselect]:checked").val();
+    console.log(val);
+socket.emit('clientTransmit', { data: val });
+});
+var socket = io.connect({{socket}});
+  socket.on('severTransmit', function (data) {
+    console.log(data);
+  }); --}}
