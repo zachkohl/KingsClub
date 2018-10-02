@@ -125,16 +125,6 @@ function step4(){
 
     }); //end REGISTRATION POST
 
-//https://socket.io/docs/rooms-and-namespaces/
-    io.on('connection', function (socket) {
-        socket.emit('severTransmit', { hello: 'world' }); //emit is the transmission method, first argument is the event name, second argument is the data https://socket.io/docs/server-api/#socket-emit-eventName-%E2%80%A6args-ack
-        socket.on('clientTransmit', function (data) { //On this event, preform said function. 
-          console.log(data.data);
-          selectedforPhoto = data.data;
-        });
-      });
-
-
 
 
 

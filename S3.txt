@@ -91,27 +91,21 @@ Example User Inline Policy:
     ]
 }
 
-cut from bucket policy
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AddCannedAcl",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::803875257005:user/kings-club"
-            },
-            "Action": "*",
-            "Resource": "arn:aws:s3:::kings-club/*",
-            "Condition": {
-                "StringEquals": {
-                    "s3:x-amz-acl": "public-read"
-                }
-            }
-        }
-    ]
-}
+cut from CORS policy
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>https://kings-club.herokuapp.com</AllowedOrigin>
+    <AllowedOrigin>http://ae9e5cf3eeff2dca/registration</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
 
+
+ljkohl@gmail.com
 
 To update the "localhost" configuration on windows:
 See C:\Windows\System32\drivers\etc\hosts

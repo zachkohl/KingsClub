@@ -47,13 +47,13 @@
 
 -- );
 
-CREATE TABLE signout
-(
-signout_id serial PRIMARY KEY,
-signout_child_id int NOT NULL,
-signout_child_name VARCHAR (255),
-signout_intime timestamptz NOT NULL
-);
+-- CREATE TABLE signout
+-- (
+-- signout_id serial PRIMARY KEY,
+-- signout_child_id int NOT NULL,
+-- signout_child_name VARCHAR (255),
+-- signout_intime timestamptz NOT NULL
+-- );
 
 -- ALTER TABLE child DROP COLUMN signedin;
 -- ALTER TABLE child ADD COLUMN child_signedin boolean DEFAULT FALSE;
@@ -110,3 +110,10 @@ signout_intime timestamptz NOT NULL
  
 -- LANGUAGE 'plpgsql';
 
+-- CREATE TABLE picturecounter
+-- (
+-- picturecounter_id serial PRIMARY KEY,
+-- picturecounter_int int
+-- );
+
+INSERT INTO picturecounter (picturecounter_int) VALUES (0);

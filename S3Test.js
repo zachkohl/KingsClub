@@ -10,7 +10,7 @@ app.get('/S3Test', checkSession, function (req, res) {
     res.render('S3Test')
 })
 
-
+//need to make another one of these for the retriaval "getObject" version. 
 app.get('/sign-s3', (req, res) => {
     const s3 = new aws.S3();
     const fileName = req.query['file-name'];

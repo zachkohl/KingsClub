@@ -24,12 +24,18 @@
     <br>
     <br>
       <button id ="toDB">Submit</button>
-    <img src ="test.jpeg" id ="image">
+    
 </div>
 
 <script>
 $( document ).ready(function() {
+var socket = io.connect({{socket}});
 localID = 0;
+var focusID
+$('#master').on('focus',':input',function(){
+    focusID = this.id;
+    console.log(focusID)
+})
 newAdult();
 newChild();
 
@@ -81,6 +87,7 @@ HTML ='<li id ='+localID+' class ="adultLi">\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
 <input type="radio" id="radio'+localID+'" name="Pselect" value="'+localID+'">\
 \
+<img src ="test.jpeg" id ="'+localID+'">\
 </li>'
 $("#adults").append(HTML)
 };
@@ -101,6 +108,7 @@ HTML ='<li id ='+localID+' class ="childLi">\
 </form>\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
 <input type="radio" id="radio'+localID+'" name="Pselect" value="'+localID+'">\
+<img src ="test.jpeg" id ="'+localID+'">\
 </li>'
 $("#children").append(HTML)
 };
@@ -124,22 +132,26 @@ $( '#master' ).on("click",".remove",function(){  //must use .on() if you want to
     
  
 });
+var socket = io.connect({{socket}});
+socket.on('photo',function(pictureName){
 
-
-var pictureName = 'output.jpeg'
 
 function getSignedRequest(pictureName){
     
 
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', `/sign-s3?file-name=${pictureName}&file-type=${pictureName}`);
+  let pictureType = 'image'
+  xhr.open('GET', `/getS3signed?file-name=${pictureName}&file-type=${pictureType}`);
 
   xhr.onreadystatechange = () => {
     if(xhr.readyState === 4){
       if(xhr.status === 200){
+          console.log(xhr.responseText)
         const response = JSON.parse(xhr.responseText);
-        console.log(response.url)
-        $('#image').attr('src',response.url)
+        console.log(response.signedRequest)
+      //  $('#image').attr('src',response.signedRequest)
+
+       $('#'+focusID).value = response.url;
      //  $('.image').value = response.url;
     //    uploadFile(file, response.signedRequest, response.url);
       }
@@ -152,28 +164,9 @@ function getSignedRequest(pictureName){
 }
 getSignedRequest(pictureName);
 
-function uploadFile(file, signedRequest, url){
-  console.log('flag 3')
-  const xhr = new XMLHttpRequest();
-  xhr.open('PUT', signedRequest);
-
-  xhr.onreadystatechange = () => {
- 
-    if(xhr.readyState === 4){
-      if(xhr.status === 200){
-        document.getElementById('preview').src = url;
-        document.getElementById('avatar-url').value = url;
-      }
-      else{
-        alert('Could not upload file.');
-      }
-    }
-  };
-  xhr.send(file);
-}
 
 
-
+})//end socket
 
 
 
