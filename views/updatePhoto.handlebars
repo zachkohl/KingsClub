@@ -1,0 +1,124 @@
+    <h1>{{message}}</h1>
+</form>
+
+<div id='master'>
+   <div id ="updateAdult">
+              <label for="ChildName">Adult name</label>
+            <input type="text" name="adultName" class = "adultInput" id="adultInputText">
+       <button id = "buttonAdult">update Adult</button>
+       <img src ="" id ="adultImage" data-filename="">
+       </div>
+   <div id="updateChild">
+       <label for="ChildName">Child name</label>
+            <input type="text" name="childName" class = "childInput" id="childInputText">
+       <button id ="buttonChild">update Child</button>
+             <img src ="" id="childImage" data-filename="">
+       </div>
+
+    
+</div>
+
+<script>
+$( document ).ready(function() {
+var socket = io.connect({{socket}});
+localID = 0;
+var focusID
+$('#master').on('focus',':input',function(){
+    focusID = this.id;
+    console.log(focusID)
+})
+
+$('#updateAdult').on('click','#buttonAdult',function(){
+//Send em'
+    let package = [{ name: "adultNames", value: $("#adultInputText").val()},{name: "adultPhoto", value: $('#adultImage').data('filename')}]
+     $.ajax({
+         url:"/updateAdultPhoto",
+         data: package,
+         type: 'POST',
+         contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
+     }).done(function(msg){
+         console.log(msg)
+         alert(msg)
+         if(msg == 'please fill in at least one adult and one child name'){
+             alert(msg)
+         }
+         location.reload(true);
+     })//end done
+     .fail(function( xhr, status, errorThrown ) {
+       alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    })
+});//end adult button
+
+
+
+$('#updateChild').on('click','#buttonChild',function(){
+//Send em'
+    let package = [{ name: "childNames", value: $("#childInputText").val()},{name: "childPhoto", value: $('#childImage').data('filename')}]
+     $.ajax({
+         url:"/updatechildPhoto",
+         data: package,
+         type: 'POST',
+         contentType :  "application/x-www-form-urlencoded; charset=UTF-8",
+     }).done(function(msg){
+         console.log(msg)
+                  alert(msg)
+         if(msg == 'please fill in at least one adult and one child name'){
+             alert(msg)
+         }
+         location.reload(true);
+     })//end done
+     .fail(function( xhr, status, errorThrown ) {
+       alert( "Sorry, there was a problem!" );
+      console.log( "Error: " + errorThrown );
+      console.log( "Status: " + status );
+      console.dir( xhr );
+    })
+
+})//end buttonCjo;d
+
+
+
+
+var socket = io.connect({{socket}});
+socket.on('photo',function(pictureName){
+getSignedRequest(pictureName);
+
+function getSignedRequest(pictureName){
+  const xhr = new XMLHttpRequest();
+  let pictureType = 'image'
+  xhr.open('GET', `/getS3signed?file-name=${pictureName}&file-type=${pictureType}`);
+
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+          console.log(xhr.responseText)
+        const response = JSON.parse(xhr.responseText);
+        console.log(response.signedRequest)
+      //  $('#image').attr('src',response.signedRequest)
+    console.log(pictureName)
+    $('#'+focusID).parent('div').find('img').attr('src',response.signedRequest)
+     $('#'+focusID).parent('div').find('img').data('filename',pictureName)
+      // $('#'+focusID).value = response.url;
+     //  $('.image').value = response.url;
+    //    uploadFile(file, response.signedRequest, response.url);
+      }
+      else{
+        alert('Could not get signed URL.');
+      }
+    }
+  };
+  xhr.send();
+}
+})//end socket
+
+
+
+
+
+
+}); //end on load
+</script>
+<script src="/socket.io/socket.io.js"></script>

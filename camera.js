@@ -41,7 +41,7 @@ app.post('/camera',checkSession, function(req, res){
 //           if(err){
 //               console.log(err)
 //           }
-sharp(req.files.sampleFile.data).resize(200, 300).rotate(90).toBuffer( function(err, data, info) {
+sharp(req.files.sampleFile.data).resize(null, 300).rotate(90).toBuffer( function(err, data, info) {
   if(err){
       console.log(err)
   }
@@ -111,9 +111,6 @@ app.get('/getS3signed', (req, res) => {
     res.end();
   });
 });
-
-
-
 
 
 }//end routes

@@ -3,7 +3,7 @@
 </form>
 
 <div id='master'>
-    <input type = "text" id = "adultName"></input>
+   <div id='input'> <input type = "text" id = "adultName"></input> </div>
     <button id = "lookup">lookup</button>
 <br>
 <br>
@@ -28,10 +28,11 @@ $( '#master' ).on("click","#lookup",function(){  //must use .on() if you want to
      }).done(    function laterFunction(response_set){
             console.log(response_set)
             let rows = JSON.parse(response_set)
-            for (let i = 0; i < rows.length; i++){
+            for (let i = 0; i < rows.length-1; i++){
 console.log('NUMBER '+ i + ":  " + rows[i].child_id);
            newChild(rows[i]);
            }; //end for loop
+           addAdultPhoto(rows[rows.length-1])
             })//end done
      .fail(function( xhr, status, errorThrown ) {
      //  alert( "Sorry, there was a problem!" );
@@ -44,14 +45,72 @@ console.log('NUMBER '+ i + ":  " + rows[i].child_id);
  
 }); //end on click lookup
 
-function newChild(row){
+
+    
+function addAdultPhoto(filename){
+    if(filename !=null){
+  const xhr = new XMLHttpRequest();
+  let pictureType = 'image'
+  xhr.open('GET', `/getS3signed?file-name=${filename}&file-type=${pictureType}`);
+
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+          console.log(xhr.responseText)
+        const response = JSON.parse(xhr.responseText);
+        console.log(response.signedRequest)
+         stringHTML = '<img src ="'+response.signedRequest+'">' 
+$('#input').append(stringHTML)
+      }
+      else{
+        alert('Could not get signed URL.');
+      }
+    }
+  };
+  xhr.send();
+    }//end if
+    else{
+        console.log('filename equals null')
+    }
+}//end addAdultPhoto
+
+
+
+    function newChild(row){
+    if(row.child_photo !=null){
+  const xhr = new XMLHttpRequest();
+  let pictureType = 'image'
+  xhr.open('GET', `/getS3signed?file-name=${row.child_photo}&file-type=${pictureType}`);
+
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+          console.log(xhr.responseText)
+        const response = JSON.parse(xhr.responseText);
+        console.log(response.signedRequest)
     console.log(row.child_id);
+    stringHTML = '<li id= "li'+childCounter+'" data-childname = "'+row.child_name+'" data-childid ="'+row.child_id+'">\
+    <p><button id = '+childCounter+' class = "signin">sign in</button> '+row.child_name+'  </p>\
+    <img src="'+response.signedRequest+'">\
+    </li>'
+$('#children').append(stringHTML)
+childCounter++;
+    } //end if xhr.status === 200
+    } //end if readystate === 4
+ }; //end xhr.onreadystatechange
+  xhr.send();
+      }// end if child_photo is null
+      else{
+        alert(row.child_name +" does not have a photo in the database");
+            console.log(row.child_id);
     stringHTML = '<li id= "li'+childCounter+'" data-childname = "'+row.child_name+'" data-childid ="'+row.child_id+'">\
     <p><button id = '+childCounter+' class = "signin">sign in</button> '+row.child_name+'  </p>\
     </li>'
 $('#children').append(stringHTML)
 childCounter++;
-};
+      }//end else
+ 
+}; //end addChild
 
 $('#master').on("click",".signin",function(){
      let thisID = $(this).parents('li').attr('id');

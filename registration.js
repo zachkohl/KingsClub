@@ -34,11 +34,14 @@ function routes(config) {
             res.send('please fill in at least one adult and one child name')
         }
         else{
-        console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        adultNames = req.body.adultNames.split(',');
-        childNames = req.body.childNames.split(',');
-
-
+//console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        // adultNames = req.body.adultNames.split(',');
+        // childNames = req.body.childNames.split(',');
+        //console.log(req.body.adultNames[0]);
+         adultNames = JSON.parse(req.body.adultNames)
+         childNames = JSON.parse(req.body.childNames)
+    
+console.log(childNames)
         //prep for crazy callback awesomeness
         let adultIDs = [];
         let childIDs = [];
@@ -46,8 +49,27 @@ function routes(config) {
         let InsertChildCounter = 0;
 
         for (i = 0; i < adultNames.length; i++) {
-            let text = 'INSERT INTO adult (adult_name) VALUES ($1) ON CONFLICT (adult_name) DO UPDATE SET adult_name = $1 RETURNING *'
-            let values = [adultNames[i]];
+            if(adultNames[i][0] == ""){
+                let text = 'INSERT INTO adult (adult_name) VALUES ($1) ON CONFLICT (adult_name) DO UPDATE SET adult_name = $1 RETURNING *'
+                let values = [adultNames[i][1]];
+                query(text, values, callback);
+                function callback(data) {
+                    if (InsertAdultCounter < adultNames.length) {
+                        adultIDs.push(data.rows[0].adult_id);
+                        InsertAdultCounter++;
+                        
+                        if(InsertAdultCounter == adultNames.length){
+                            step2();
+                        }
+                       
+    
+                    }
+                  
+                };//end call back  
+            }//end if
+            else{
+                let text = 'INSERT INTO adult (adult_name,adult_photo) VALUES ($1,$2) ON CONFLICT (adult_name) DO UPDATE SET adult_photo = $2 RETURNING *'
+                let values = [adultNames[i][1],adultNames[i][0]];
             query(text, values, callback);
             function callback(data) {
                 if (InsertAdultCounter < adultNames.length) {
@@ -62,6 +84,7 @@ function routes(config) {
                 }
               
             };//end call back  
+        }//end else
         };//end for loop
 
         function step2() {
@@ -69,8 +92,9 @@ function routes(config) {
 
             for (i = 0; i < childNames.length; i++) {
 
+                if(childNames[i][0] == ""){
                 let text = 'INSERT INTO child (child_name) VALUES ($1) ON CONFLICT (child_name) DO UPDATE SET child_name = $1 RETURNING *';
-                let values = [childNames[i]];
+                let values = [childNames[i][1]];
                 query(text, values, callback);
                 function callback(data) {
 
@@ -85,6 +109,25 @@ function routes(config) {
                       //  step3();
                     };//end else
                 };//end callback
+            }//end if photo blank
+            else{
+                let text = 'INSERT INTO child (child_name , child_photo) VALUES ($1,$2) ON CONFLICT (child_name) DO UPDATE SET child_photo = $2 RETURNING *';
+                let values = [childNames[i][1],childNames[i][0]];
+                query(text, values, callback);
+                function callback(data) {
+
+                    if (InsertChildCounter < childNames.length) {
+                        childIDs.push(data.rows[0].child_id);
+                        InsertChildCounter++;
+                        if(InsertChildCounter == childNames.length){
+                            step3();
+                        }
+                    }
+                    else {
+                      //  step3();
+                    };//end else
+                };//end callback
+            }//end else
             };//end for
         };//end step 2
 

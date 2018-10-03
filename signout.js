@@ -28,7 +28,7 @@ function routes(config) {
 
 
         // console.log(req.body.adultName)
-        let text = 'SELECT child_name,child.child_id,child_signedin FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = TRUE';
+        let text = 'SELECT child_name,child.child_id,child_signedin, child_photo, adult_photo FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = TRUE';
         let values = [req.body.adultName];
         query(text, values, callback);
         function callback(data) {

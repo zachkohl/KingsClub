@@ -43,16 +43,15 @@ $( '#master' ).on("click","#toDB",function(){  //must use .on() if you want to u
 adultNames = [];
 childNames = [];
 $('.adultInput').each(function( i ) {
- adultNames.push($(this).val())
+ adultNames.push( '["'+$(this).parents('li').find('img').data('filename')+'","'+$(this).val()+'"]')
 })
 
 $('.childInput').each(function( i ) {
- childNames.push($(this).val())
+ childNames.push( '["'+$(this).parents('li').find('img').data('filename')+'","'+$(this).val()+'"]')
 })
 
-console.log(adultNames.toString())
-console.log(childNames.toString())
-
+adultNames = '['+adultNames.toString()+']';
+childNames = '['+childNames.toString()+']';
 //Send em'
     let package = [{ name: "childNames", value: childNames},{name: "adultNames", value: adultNames}]
      $.ajax({
@@ -85,9 +84,7 @@ HTML ='<li id ='+localID+' class ="adultLi">\
             <input type="text" id="adultInput'+ localID +'"" name="Adultname" class = "adultInput"><br>\
 </form>\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
-<input type="radio" id="radio'+localID+'" name="Pselect" value="'+localID+'">\
-\
-<img src ="test.jpeg" id ="'+localID+'">\
+<img src ="" id ="'+localID+'" data-filename="">\
 </li>'
 $("#adults").append(HTML)
 };
@@ -104,11 +101,10 @@ localID++;
 HTML ='<li id ='+localID+' class ="childLi">\
 <form id = '+'form'+'Child'+localID+'>\
             <label for="ChildName">Child name</label>\
-            <input type="text" name="ChildName" class = "childInput"><br>\
+            <input type="text" name="ChildName" class = "childInput" id="childInput"'+localID+'><br>\
 </form>\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
-<input type="radio" id="radio'+localID+'" name="Pselect" value="'+localID+'">\
-<img src ="test.jpeg" id ="'+localID+'">\
+<img src ="" id ="'+localID+'" data-filename="">\
 </li>'
 $("#children").append(HTML)
 };
@@ -132,13 +128,15 @@ $( '#master' ).on("click",".remove",function(){  //must use .on() if you want to
     
  
 });
+
+
+
+
 var socket = io.connect({{socket}});
 socket.on('photo',function(pictureName){
-
+getSignedRequest(pictureName);
 
 function getSignedRequest(pictureName){
-    
-
   const xhr = new XMLHttpRequest();
   let pictureType = 'image'
   xhr.open('GET', `/getS3signed?file-name=${pictureName}&file-type=${pictureType}`);
@@ -150,8 +148,10 @@ function getSignedRequest(pictureName){
         const response = JSON.parse(xhr.responseText);
         console.log(response.signedRequest)
       //  $('#image').attr('src',response.signedRequest)
-
-       $('#'+focusID).value = response.url;
+    
+    $('#'+focusID).parents('li').find('img').attr('src',response.signedRequest)
+     $('#'+focusID).parents('li').find('img').data('filename',pictureName)
+      // $('#'+focusID).value = response.url;
      //  $('.image').value = response.url;
     //    uploadFile(file, response.signedRequest, response.url);
       }
@@ -162,10 +162,6 @@ function getSignedRequest(pictureName){
   };
   xhr.send();
 }
-getSignedRequest(pictureName);
-
-
-
 })//end socket
 
 

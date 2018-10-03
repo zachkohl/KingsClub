@@ -20,5 +20,7 @@ s3Test = require('./S3Test.js')(config);
 
 camera = require('./camera.js')(config);
 
+updatePhoto = require('./updatePhoto.js')(config);
+
 
 

@@ -30,14 +30,35 @@ function routes(config) {
 
     app.post('/api/signin', checkSession, function (req, res) {
 
-
-        // console.log(req.body.adultName)
-        let text = 'SELECT child_name,child.child_id,child_signedin FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = FALSE';
+        let text = 'SELECT adult_photo FROM  adult WHERE adult_name =  $1';
         let values = [req.body.adultName];
         query(text, values, callback);
         function callback(data) {
-            console.log(data.rows)
+            console.log(data.rows[0].adult_photo)
+           let adultPhoto = data.rows[0].adult_photo
+           step1(adultPhoto);
+
+        };//end callback
+
+        //       let text = 'SELECT child_id FROM  adult_child, adult WHERE adult_child.adult_id = adult.adult_id ';
+        //        let text = 'SELECT adult_id, child_id FROM adult_id INNER JOIN adult_id ON child_adult.adult_id = adult.adult_id';
+
+        //let text = 'INSERT INTO adult_child (adult_id, child_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT * FROM adult_child WHERE adult_id = $1 AND child_id = $2)';
+
+
+
+function step1(adultPhoto){
+
+
+        // console.log(req.body.adultName)
+        let text = 'SELECT child_name,child.child_id,child_signedin,child_photo FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = FALSE';
+        let values = [req.body.adultName];
+        query(text, values, callback);
+        function callback(data) {
+            console.log(typeof data.rows)
+            data.rows.push(adultPhoto)
             package = JSON.stringify(data.rows)
+            console.log(package)
             res.send(package)
 
         };//end callback
@@ -46,7 +67,8 @@ function routes(config) {
         //        let text = 'SELECT adult_id, child_id FROM adult_id INNER JOIN adult_id ON child_adult.adult_id = adult.adult_id';
 
         //let text = 'INSERT INTO adult_child (adult_id, child_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT * FROM adult_child WHERE adult_id = $1 AND child_id = $2)';
-    });
+    };
+}); //end signin post
 
 
     app.post('/api/signinChild', checkSession, function (req, res) {
