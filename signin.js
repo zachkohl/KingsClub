@@ -17,7 +17,7 @@ function routes(config) {
 
     //SIGN IN 
     app.get('/signin', checkSession, function (req, res) {
-        res.render('signin', { message: "hello world" })
+        res.render('signin', { message: "" })
     })
 
     // app.get('/api/signin', checkSession, function (req, res) {
@@ -29,15 +29,33 @@ function routes(config) {
 
 
     app.post('/api/signin', checkSession, function (req, res) {
-
+        let adultName = req.body.adultName;
+        adultName = adultName.toLowerCase();
+        console.log(adultName)
         let text = 'SELECT adult_photo FROM  adult WHERE adult_name =  $1';
-        let values = [req.body.adultName];
+        let values = [adultName.toLowerCase()];
         query(text, values, callback);
         function callback(data) {
+            console.log('inside callback 1')
+            if(data.rowCount == 0){
+            //    res.send('adult does not have photo in the database')
+                let text = 'SELECT adult_name FROM  adult WHERE adult_name =  $1';
+        let values = [adultName.toLowerCase()];
+        query(text, values, callback);
+        function callback(data) {
+            if(data.rowCount == 0){
+                res.send('adult not registered')
+            }else{
+           step1("noPhoto.jpeg");
+            }//end else
+        };//end callback
+            }//end if
+            else{
             console.log(data.rows[0].adult_photo)
            let adultPhoto = data.rows[0].adult_photo
            step1(adultPhoto);
-
+            } //end else
+    
         };//end callback
 
         //       let text = 'SELECT child_id FROM  adult_child, adult WHERE adult_child.adult_id = adult.adult_id ';
@@ -50,9 +68,9 @@ function routes(config) {
 function step1(adultPhoto){
 
 
-        // console.log(req.body.adultName)
+         console.log(adultName)
         let text = 'SELECT child_name,child.child_id,child_signedin,child_photo FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = FALSE';
-        let values = [req.body.adultName];
+        let values = [adultName];
         query(text, values, callback);
         function callback(data) {
             console.log(typeof data.rows)

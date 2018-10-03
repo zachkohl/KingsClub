@@ -6,12 +6,6 @@ function routes(config) {
     io = config.io;
 
 
-    var selectedforPhoto = null;
-
-
-
-
-
     app.get('/', function (req, res) {
         res.send('hello world!')
     });//end '/'
@@ -39,10 +33,19 @@ function routes(config) {
         // childNames = req.body.childNames.split(',');
         //console.log(req.body.adultNames[0]);
          adultNames = JSON.parse(req.body.adultNames)
+         for(let item =0; item < adultNames.length; item++){
+             adultNames[item][1] = adultNames[item][1].toLowerCase();
+         }
          childNames = JSON.parse(req.body.childNames)
-    
+         for(let item =0; item < childNames.length; item++){
+            childNames[item][1] = childNames[item][1].toLowerCase();
+        }
+console.log(adultNames)
 console.log(childNames)
         //prep for crazy callback awesomeness
+
+
+     
         let adultIDs = [];
         let childIDs = [];
         let InsertAdultCounter = 0;
@@ -165,7 +168,7 @@ function step4(){
     res.send('complete')
 }//end step 4
         }//end else for checking names are submitted
-
+ //   }//end STEP 0
     }); //end REGISTRATION POST
 
 

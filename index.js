@@ -22,5 +22,7 @@ camera = require('./camera.js')(config);
 
 updatePhoto = require('./updatePhoto.js')(config);
 
+log = require('./log.js')(config);
+
 
 

@@ -1,4 +1,4 @@
-<p>registration</p>
+<p>{{message}}</p>
 {{!-- <form method="post">
     <label for="username">User Name</label>
     <input type="text" name="username"><br>
@@ -10,7 +10,7 @@
     <input type="password" name="password"><br>
     
     <input type="submit"> --}}
-    <h1>{{message}}</h1>
+    <h1>REGISTRATION</h1>
 </form>
 
 <div id='master'>
@@ -33,7 +33,7 @@ var socket = io.connect({{socket}});
 localID = 0;
 var focusID
 $('#master').on('focus',':input',function(){
-    focusID = this.id;
+    focusID = this.id
     console.log(focusID)
 })
 newAdult();
@@ -64,6 +64,7 @@ childNames = '['+childNames.toString()+']';
          if(msg == 'please fill in at least one adult and one child name'){
              alert(msg)
          }
+    location.reload(true);
      })//end done
      .fail(function( xhr, status, errorThrown ) {
        alert( "Sorry, there was a problem!" );
@@ -101,7 +102,7 @@ localID++;
 HTML ='<li id ='+localID+' class ="childLi">\
 <form id = '+'form'+'Child'+localID+'>\
             <label for="ChildName">Child name</label>\
-            <input type="text" name="ChildName" class = "childInput" id="childInput"'+localID+'><br>\
+            <input type="text" name="ChildName" class = "childInput" id="childInput'+localID+'"><br>\
 </form>\
 <button id = '+'button'+localID+' class ="remove">remove</button>\
 <img src ="" id ="'+localID+'" data-filename="">\

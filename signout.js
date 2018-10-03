@@ -29,7 +29,7 @@ function routes(config) {
 
         // console.log(req.body.adultName)
         let text = 'SELECT child_name,child.child_id,child_signedin, child_photo, adult_photo FROM  adult_child INNER JOIN adult ON (adult.adult_id=adult_child.adult_id) INNER JOIN child ON (child.child_id=adult_child.child_id) WHERE adult.adult_name =$1 AND child_signedin = TRUE';
-        let values = [req.body.adultName];
+        let values = [req.body.adultName.toLowerCase()];
         query(text, values, callback);
         function callback(data) {
             console.log(data.rows)
@@ -49,7 +49,7 @@ function routes(config) {
 step1();
 function step1(){
     let text = 'SELECT child_signedin FROM child WHERE child_name = $1';
-    let values = [req.body.childName];
+    let values = [req.body.childName.toLowerCase()];
     query(text, values, callback);
     function callback(data) {
         console.log(data.rows)
@@ -63,7 +63,7 @@ function step1(){
 
 function step2(){
     let text = 'UPDATE child SET child_signedin = FALSE WHERE child_name = $1';
-let values = [req.body.childName];
+let values = [req.body.childName.toLowerCase()];
 query(text, values, callback);
 function callback(data) {
     step3();
@@ -75,8 +75,8 @@ function callback(data) {
 
 function step3(){
     let nowTime = new Date();
-    let text = 'INSERT INTO signout (signin_child_id, signin_child_name,signout_intime) VALUES ($1,$2,$3)';
-let values = [req.body.childId,req.body.childName,nowTime];
+    let text = 'INSERT INTO signout (signout_child_id, signout_child_name,signout_intime) VALUES ($1,$2,$3)';
+let values = [req.body.childId,req.body.childName.toLowerCase(),nowTime];
 query(text, values, callback);
 function callback(data) {
    res.send('child signed in')

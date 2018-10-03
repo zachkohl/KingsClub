@@ -87,7 +87,7 @@ $('#input').append(stringHTML)
         console.log(response.signedRequest)
     console.log(row.child_id);
     stringHTML = '<li id= "li'+childCounter+'" data-childname = "'+row.child_name+'" data-childid ="'+row.child_id+'">\
-    <p><button id = '+childCounter+' class = "signin">sign in</button> '+row.child_name+'  </p>\
+    <p><button id = '+childCounter+' class = "signin">sign out</button> '+row.child_name+'  </p>\
     <img src="'+response.signedRequest+'">\
     </li>'
 $('#children').append(stringHTML)
