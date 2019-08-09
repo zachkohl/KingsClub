@@ -116,4 +116,6 @@
 -- picturecounter_int int
 -- );
 
-INSERT INTO picturecounter (picturecounter_int) VALUES (0);
+--INSERT INTO picturecounter (picturecounter_int) VALUES (0);
+
+TRUNCATE adult, child, adult_child,signin,signout;
